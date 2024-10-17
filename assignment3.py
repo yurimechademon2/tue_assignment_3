@@ -15,86 +15,128 @@ def show_duo_names():
 
 
 class MemoryTestWindow:
-    def __init__(self):
-        return  # replace with you code
+    def __init__(self, root):
+        self.root = root
+        self.fontSize = 20
+        self.fontFamily = "Helvetica"
+        self.fontWeight = "bold"
+        self.screenWidth = 1200
+        self.defaultPadding = 10
+        self.count = 5
+        self.frame = None
+        self.container1 = None
+        self.container2 = None
+        self.container3 = None
+        self.container3Label1 = None
+        self.container3Label2 = None
+        self.container3Label3 = None
+        self.container3Input1 = None
+        self.container3Input2 = None
+        self.container3Input3 = None
+        self.topMessageBox = None
+        self.countingMessage = None
+        self.startBtn = None
+        self.block1 = None
+        self.block2 = None
+        self.block3 = None
+        self.block4 = None
+        self.blockContainer = None
+        self.blockWidth = 20
+        self.blockHeight = 2
 
-def createRow(root, rows):
-    for row in range(rows):
-        root.rowconfigure(row, weight=row+1)
+    def initializeScreen(self):
+        self.frame = Frame(self.root, width=self.screenWidth, height=500, bg="white")
+        self.frame.pack_propagate(False)  
+        self.frame.pack(padx=self.defaultPadding, pady=self.defaultPadding)
 
-def createColumn(root, columns):
-    for column in range(columns):
-        root.rowconfigure(column, weight=column+1)
+        self.container1 = Frame(self.frame, width=self.screenWidth, height=30, bg="red")
+        self.container1.pack_propagate(False)  
+        self.container1.pack()
+
+        self.container2 = Frame(self.frame, width=self.screenWidth, height=200, bg="gray")
+        self.container2.pack_propagate(False)
+        self.container2.pack(fill="both", expand=True)
+
+        self.container3 = Frame(self.frame, width=self.screenWidth, height=200, bg="green")
+        self.container3.pack_propagate(False)
+        self.container3.pack()
+
+        return
+
+    def initializeWidgets(self):
+        
+        self.countingMessage = Label(self.container2, text="counting", font=(self.fontFamily, self.fontSize, self.fontWeight))
+        self.countingMessage.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame in the window
+
+        self.topMessageBox = Label(self.container1, text="Click 'start' to begin the memory test.", font=(self.fontFamily, self.fontSize, self.fontWeight))
+        self.topMessageBox.pack(side="top")  # Place the label at the top of the frame
+
+        self.startBtn = Button(self.container3, text="Start", bg="lightgreen", font=(self.fontFamily, self.fontSize, self.fontWeight), command=self.startCounting)  # startBtn
+        self.startBtn.grid(row=0, column=0)
+
+        self.container3Label1 = Label(self.container3, text="ms invisible: ", font=(self.fontFamily, self.fontSize, self.fontWeight))  # First label
+        self.container3Label1.grid(row=0, column=1, padx=self.defaultPadding, pady=self.defaultPadding)
+        self.container3Label2 = Label(self.container3, text="ms between: ", font=(self.fontFamily, self.fontSize, self.fontWeight))  # Second label
+        self.container3Label2.grid(row=0, column=3, padx=self.defaultPadding, pady=self.defaultPadding)
+        self.container3Label3 = Label(self.container3, text="sequence length", font=(self.fontFamily, self.fontSize, self.fontWeight))  # Third label
+        self.container3Label3.grid(row=0, column=5, padx=self.defaultPadding, pady=self.defaultPadding)
+
+        self.container3Input1 = Entry(self.container3)  # First input field
+        self.container3Input1.grid(row=0, column=2, padx=self.defaultPadding, pady=self.defaultPadding)
+        self.container3Input2 = Entry(self.container3)  # Second input field
+        self.container3Input2.grid(row=0, column=4, padx=self.defaultPadding, pady=self.defaultPadding)
+        self.container3Input3 = Entry(self.container3)  # Third input field
+        self.container3Input3.grid(row=0, column=6, padx=self.defaultPadding, pady=self.defaultPadding)
+    
+    def startCounting(self):
+        self.topMessageBox.config(text="Counting down...")
+        self.startBtn.config(state="disabled")
+        self.countToBeginObservationalPhase()
+        self.root.after(1000, self.countToBeginObservationalPhase)
+        self.root.after(2000, self.countToBeginObservationalPhase)
+        self.root.after(3000, self.countToBeginObservationalPhase)
+        self.root.after(4000, self.countToBeginObservationalPhase)
+
+    def convertToDot(self):
+        dots = ""
+        for i in range(self.count):
+            dots += '.'
+        return dots
+
+    def beginObservationalPhase(self):
+        self.blockContainer = Frame(self.container2, width=800, height=400, bg="gray")
+        self.blockContainer.pack_propagate(False)  # Prevent container2 from resizing to fit its contents
+        self.blockContainer.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame in the window
+
+        self.block1 = Label(self.blockContainer, font=(self.fontFamily, self.fontSize, self.fontWeight), bg="red", width=self.blockWidth, height=self.blockHeight)  
+        self.block1.grid(row=0, column=0, padx=self.defaultPadding, pady=self.defaultPadding)  
+
+        self.block2 = Label(self.blockContainer, font=(self.fontFamily, self.fontSize, self.fontWeight), bg="blue", width=self.blockWidth, height=self.blockHeight) 
+        self.block2.grid(row=0, column=1, padx=self.defaultPadding, pady=self.defaultPadding) 
+
+        self.block3 = Label(self.blockContainer, font=(self.fontFamily, self.fontSize, self.fontWeight), bg="black", width=self.blockWidth, height=self.blockHeight)  
+        self.block3.grid(row=1, column=0, padx=self.defaultPadding, pady=self.defaultPadding)  
+
+        self.block4 = Label(self.blockContainer, font=(self.fontFamily, self.fontSize, self.fontWeight), bg="white", width=self.blockWidth, height=self.blockHeight) 
+        self.block4.grid(row=1, column=1, padx=self.defaultPadding, pady=self.defaultPadding) 
+
+    def countToBeginObservationalPhase(self):
+        if (self.count == 1):
+            self.countingMessage.destroy()
+            self.beginObservationalPhase()
+            return
+
+        self.countingMessage.config(text=f"{self.convertToDot()}")
+        self.count = self.count - 1
 
 def main():
     show_duo_names()
 
-    root = Tk()  # Create the main window
+    root = Tk()  
+    window = MemoryTestWindow(root)
     root.title("Memory Test")
-
-    # Configure row weights for varying row sizes
-    createRow(root, 3)
-    # Configure the column size
-    # root.columnconfigure(0, weight=1)
-
-    # Create labels for each row with different background colors
-    rowWidth = 1000
-    rowHeight = 20
-    midRowHeight = 300
-    defaultPadding = 5
-
-    # Create the first label with a frame for the inner label
-    row1 = Label(root)
-    row1.grid(row=0, column=0)
-
-    # Create the second label
-    row2 = Label(root, bg="lightgreen")
-    row2.grid(row=1, column=0, sticky="nsew")
-
-    # Create the third label
-    row3 = Label(root)
-    row3.grid(row=2, column=0)
-
-    # Create a frame inside the first label with specified width and height
-    frame1 = Frame(row1, width=rowWidth, height=rowHeight)
-    frame1.pack(padx=defaultPadding, pady=defaultPadding)  # Fill the frame and expand
-
-    # Create a frame inside the second label with specified width and height
-    frame2 = Frame(row2, width=rowWidth, height=midRowHeight, bg="lightgreen")
-    frame2.pack(padx=defaultPadding, pady=defaultPadding)  # Fill the frame and expand
-
-    # Create an inner label to add text inside the frame
-    frame1Container = Label(frame1)
-    frame1Container.pack(pady=defaultPadding)  # Padding around the inner label
-
-    frame1ContainerMessage = Label(frame1Container, text="Click 'start' to begin the memory test.", font=("Helvetica", 20, "bold"))
-    frame1ContainerMessage.pack(side="top")  # Place the label at the top of the frame
-
-    # Create a frame inside the third label with specified width and height
-    frame3 = Frame(row3, width=rowWidth, height=rowHeight)
-    frame3.pack(padx=defaultPadding, pady=defaultPadding)  # Fill the frame and expand
-
-    frame3Container = Label(frame3)
-    frame3Container.pack(side="bottom", pady=defaultPadding, expand=True)  # Padding around the inner label
-
-    # Create the new widgets in the specified order
-    frame3StartBtn = Button(frame3Container, text="Start", bg="lightgreen", font=("Helvetica", 20, "bold"))  # frame3StartBtn
-    frame3StartBtn.grid(row=0, column=0, padx=defaultPadding, pady=defaultPadding, sticky="ew")
-
-    frame3Label1 = Label(frame3Container, text="ms invisible: ", font=("Helvetica", 20, "bold"))  # First label
-    frame3Label1.grid(row=0, column=1, padx=defaultPadding, pady=defaultPadding)
-    frame3Label2 = Label(frame3Container, text="ms between: ", font=("Helvetica", 20, "bold"))  # Second label
-    frame3Label2.grid(row=0, column=3, padx=defaultPadding, pady=defaultPadding)
-    frame3Label3 = Label(frame3Container, text="sequence length", font=("Helvetica", 20, "bold"))  # Third label
-    frame3Label3.grid(row=0, column=5, padx=defaultPadding, pady=defaultPadding)
-
-    frame3Input1 = Entry(frame3Container)  # First input field
-    frame3Input1.grid(row=0, column=2, padx=defaultPadding, pady=defaultPadding)
-    frame3Input2 = Entry(frame3Container)  # Second input field
-    frame3Input2.grid(row=0, column=4, padx=defaultPadding, pady=defaultPadding)
-    frame3Input3 = Entry(frame3Container)  # Third input field
-    frame3Input3.grid(row=0, column=6, padx=defaultPadding, pady=defaultPadding)
-
+    window.initializeScreen()
+    window.initializeWidgets()
     root.mainloop()
 
 main()
