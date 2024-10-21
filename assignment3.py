@@ -8,20 +8,21 @@ def show_duo_names():
     print('┌─────────────────────┬───────────────────────┐')
     print('│ 0HV120 assignment 3 │ Memory Test           │')
     print('├─────────────────────┼───────────────────────┤')
-    print('│ duo partner 1       │ name 1                │')
+    print('│ duo partner 1       │ Sol Moon              │')
     print('├─────────────────────┼───────────────────────┤')
     print('│ duo partner 2       │ name 2                │')
     print('└─────────────────────┴───────────────────────┘')
 
 class MemoryTestWindow:
-    def __init__(self, root, msInvisible, msBetween, sequenceLength):
+    def __init__(self, root, msInvisible, msBetween, sequenceLength, count):
         self.root = root
-        self.fontSize = 10
+        self.fontSize = 20
         self.fontFamily = "Helvetica"
         self.fontWeight = "bold"
-        self.screenWidth = 1300
+        self.screenWidth = 1200
+        self.screenHeight = 900
         self.defaultPadding = 20
-        self.count = 5
+        self.count = count
         self.frame = None
         self.container1 = None
         self.container2 = None
@@ -55,40 +56,41 @@ class MemoryTestWindow:
         self.defaultBg = "white"
         self.defaultInputBg = "lightgray"
         self.isFirstTry = True
+        self.inputWidth = 5
 
     def initializeApp(self):
         self.initializeScreen()
         self.initializeWidgets()
         # if sequence lenth is 0... then it must be 1.
-        if (self.sequenceLength == 0):
-            self.sequenceLength = 1
 
     def initializeScreen(self):
-        self.frame = Frame(self.root, width=self.screenWidth, height=500, bg=self.defaultBg)
+        self.frame = Frame(self.root, width=self.screenWidth, height=self.screenHeight, bg=self.defaultBg)
         self.frame.pack_propagate(False)  
         self.frame.pack(padx=self.defaultPadding, pady=self.defaultPadding)
 
-        self.container1 = Frame(self.frame, width=self.screenWidth, height=30, bg=self.defaultBg)
+        self.container1 = Frame(self.frame, width=self.screenWidth, height=self.screenHeight*0.1, bg=self.defaultBg)
         self.container1.pack_propagate(False)  
         self.container1.pack()
 
-        self.container2 = Frame(self.frame, width=self.screenWidth, height=400, bg=self.defaultBg)
+        self.container2 = Frame(self.frame, width=self.screenWidth, height=self.screenHeight*0.6, bg=self.defaultBg)
         self.container2.pack_propagate(False)
         self.container2.pack(fill="both", expand=True)
 
-        self.container3 = Frame(self.frame, width=self.screenWidth, height=200, bg=self.defaultBg)
+        self.container3 = Frame(self.frame, width=self.screenWidth, height=self.screenHeight*0.3, bg=self.defaultBg)
         self.container3.pack_propagate(False)
         self.container3.pack()
 
         return
 
     def initializeWidgets(self):
-        
-        self.countingMessage = Label(self.container2, text="counting", font=(self.fontFamily, self.fontSize, self.fontWeight), bg=self.defaultBg)
-        self.countingMessage.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame in the window
+        if (self.sequenceLength == 0):
+            self.sequenceLength = 1
 
-        self.topMessageBox = Label(self.container1, bg=self.defaultBg, text="Click 'start' to begin the memory test.", font=(self.fontFamily, self.fontSize, self.fontWeight))
-        self.topMessageBox.pack(side="top")  # Place the label at the top of the frame
+        self.countingMessage = Label(self.container2, text="counting", font=(self.fontFamily, self.fontSize, self.fontWeight), bg=self.defaultBg)
+        self.countingMessage.place(relx=0.5, rely=0.5, anchor='center')
+
+        self.topMessageBox = Label(self.container1, bg=self.defaultBg, text="Click the 'start' to begin the memory test.", font=(self.fontFamily, self.fontSize, self.fontWeight))
+        self.topMessageBox.pack(side="top")
 
         self.startBtn = Button(self.container3, text="Start", bg=self.defaultInputBg, font=(self.fontFamily, self.fontSize, self.fontWeight), command=self.startCounting)  # startBtn
         self.startBtn.grid(row=0, column=0)
@@ -107,16 +109,15 @@ class MemoryTestWindow:
         input2.set(self.msBetween) 
         input3.set(self.sequenceLength) 
 
-        self.container3Input1 = Entry(self.container3, bg=self.defaultInputBg, textvariable=input1, font=(self.fontFamily, self.fontSize, self.fontWeight))  # First input field
+        self.container3Input1 = Entry(self.container3, width = self.inputWidth, bg=self.defaultInputBg, textvariable=input1, font=(self.fontFamily, self.fontSize, self.fontWeight))  # First input field
         self.container3Input1.grid(row=0, column=2, padx=self.defaultPadding, pady=self.defaultPadding)
-        self.container3Input2 = Entry(self.container3, bg=self.defaultInputBg, textvariable=input2, font=(self.fontFamily, self.fontSize, self.fontWeight))  # Second input field
+        self.container3Input2 = Entry(self.container3, width = self.inputWidth, bg=self.defaultInputBg, textvariable=input2, font=(self.fontFamily, self.fontSize, self.fontWeight))  # Second input field
         self.container3Input2.grid(row=0, column=4,  padx=self.defaultPadding, pady=self.defaultPadding)
-        self.container3Input3 = Entry(self.container3, bg=self.defaultInputBg, textvariable=input3, font=(self.fontFamily, self.fontSize, self.fontWeight))  # Third input field
+        self.container3Input3 = Entry(self.container3, width = self.inputWidth, bg=self.defaultInputBg, textvariable=input3, font=(self.fontFamily, self.fontSize, self.fontWeight))  # Third input field
         self.container3Input3.grid(row=0, column=6, padx=self.defaultPadding, pady=self.defaultPadding)
     
     def countDown(self):
-        for second in range(1):
-        # for second in range(self.count):
+        for second in range(self.count):
             self.root.after(second*1000, self.countTostartObservationalPhase)
 
     def startCounting(self):
@@ -238,6 +239,9 @@ class MemoryTestWindow:
         self.block2.grid()
         self.block3.grid()
         self.block4.grid()
+        input3 = StringVar()
+        input3.set(self.sequenceLength) 
+        self.container3Input3.config(textvariable=f"{input3}")
 
         # self.initializeBlocks()
 
@@ -256,7 +260,7 @@ class MemoryTestWindow:
         # If the user clicks the right sequence display, proceed with a sequence of
         # 2, and then a sequence of 3 etc.
         if (self.isSequenceCorrect):
-            if (self.sequenceLength < 5):
+            if (self.sequenceLength < 4):
                 self.sequenceLength += 1
         self.isFirstTry = False
         self.randomizeSequence()
@@ -275,7 +279,7 @@ class MemoryTestWindow:
         self.block4.unbind("<Button-1>")
 
     def countTostartObservationalPhase(self):
-        if (self.count == 5):
+        if (self.count == 1):
             self.countingMessage.destroy()
             self.startObservationalPhase()
             return
@@ -287,10 +291,12 @@ def main():
     msInvisible = 500
     msBetween = 500
     sequenceLength = 0
-
+    count = 4
     show_duo_names()
+    print ("You can change the values of msInvisible, msBetween, sequenceLength, count in the main function.")
     root = Tk()  
-    window = MemoryTestWindow(root, msInvisible, msBetween, sequenceLength)
+    root.config(bg="white")
+    window = MemoryTestWindow(root, msInvisible, msBetween, sequenceLength, count)
     root.title("Memory Test")
     window.initializeApp()
     root.mainloop()
