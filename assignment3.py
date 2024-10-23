@@ -57,7 +57,34 @@ class MemoryTestWindow:
         self.defaultInputBg = "lightgray"
         self.isFirstTry = True
         self.inputWidth = 5
+        self.sequence = [] # added this line
+        
+    ########## heres the code regarding the random sequence ##########
+    
+    def generateSequence(self):    # Generate a random sequence of block indices for the memory test.
+        sequence = []
+        for _ in range(self.sequenceLength):
+            sequence.append(randint(0, 3))  # Generate random index from 0 to 3
+        return sequence    
 
+    def playSequence(self):    # Play the generated sequence by triggering block hiding at intervals    
+        self.sequence = self.generateSequence()
+    
+        for i, blockIndex in enumerate(self.sequence):
+            # Schedule each block in the sequence to be hidden
+            self.root.after(i * (self.msInvisible + self.msBetween), 
+                            lambda idx=blockIndex: self.hideBlockByIndex(idx))
+        # After sequence is done, enable user input
+        totalTime = len(self.sequence) * (self.msInvisible + self.msBetween)
+        self.root.after(totalTime, self.startRecallPhase)
+    
+    def hideBlockByIndex(self, index):    # Hide the block at the given index
+        blockToBeHidden = self.blocks[index]
+        blockToBeHidden.grid_remove()
+        blockToBeHidden.after(self.msInvisible, lambda: self.showBlock(blockToBeHidden))
+    
+    #######################################################################################
+    
     def initializeApp(self):
         self.initializeScreen()
         self.initializeWidgets()
@@ -165,6 +192,7 @@ class MemoryTestWindow:
 
     def startObservationalPhase(self):
         self.initializeBlocks()
+        self.playSequence() # added this line
 
     def randomizeSequence(self):
         shuffle(self.blockColors)
